@@ -1,6 +1,7 @@
 # Shipment-management-form connected with JsonPowerDB
 ### Description
-It ia a shipment details form well connected with JsonPowerDB
+It ia a shipment details form well connected with JsonPowerDB. 
+### You can make your own form with the help of this project by changing only html entities name and their property like id, name. And you have to change some names in javascript also.
 
 ## Benefits of jsonPowerDB
 - Easy to use and easy to develop.
