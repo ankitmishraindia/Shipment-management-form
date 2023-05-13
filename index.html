@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<!-- JQUERY LIBRARY -->
+<script
+src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- LATEST COMPILED BOOTSRTAP -->
+<script
+src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!-- jpdb library -->
+<script
+src="https://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+</head>
+<body>
+<div class="container">
+<div class="page-header text-center">
+<h2>Shipment Management Form</h2>
+</div>
+<form id="shipmentform" method="post">
+<div class="form-group">
+<label for="shipmentno">Shipment-No:</label> 
+</label>
+<input type="text" class="form-control" name="shipmentno" id="shipmentno"
+placeholder="Enter Shipment-No" onchange="getShip()">
+</div>
+<div class="form-group">
+<label for="description">Description:</label>
+<input type="text" class="form-control" id="description"
+placeholder="Enter Description" name="description">
+</div>
+<div class="form-group">
+<label for="source">Source:</label>
+<input type="text" class="form-control" id="source"
+placeholder="Enter Source" name="source">
+</div>
+<div class="form-group">
+<label for="destination">Destination:</label>
+<input type="text" class="form-control" id="destination"
+placeholder="Enter Destination" name="destination">
+</div>
+<div class="form-group">
+<label for="shippingdate">Shipping Date:</label>
+<input type="date" class="form-control" id="shippingdate"
+placeholder="Enter Shipping Date" name="shippingdate">
+</div>
+<div class="form-group">
+<label for="exdd">Expected Delivery Date:</label>
+<input type="date" class="form-control" id="exdd"
+placeholder="Enter Expected Delivery Date" name="exdd">
+</div>
+<div class="form-group text-center">
+<input type="button" class="btn btn-primary btn-lg" id="save" value="Save"
+onclick="saveData();">    
+<input type="button" class="btn btn-primary btn-lg" id="change" value="Update"
+onclick="changeData();">    
+<input type="button" class="btn btn-primary btn-lg" id="reset" value="Reset"  
+onclick="resetForm();">    
+</div>
+
+</form>
+<!-- javascript code -->
+<script>
+    var jpdbBaseURL='http://api.login2explore.com:5577';
+    var jpdbIRL='/api/irl';
+    var jpdbIML='/api/iml';
+    var empDBName='Shippingdb';
+    var empRelationName="Shipping-Rel";
+    var connToken='90933197|-31949319887550658|90951112';
+    // initial state of entry boxes
+    $("#shipmentno").focus();
+    $("#description").prop("disabled",true);
+    $("#source").prop("disabled",true);
+    $("#destination").prop("disabled",true);
+    $("#shippingdate").prop("disabled",true);
+    $("#exdd").prop("disabled",true);
+    $("#save").prop("disabled",true);
+    $("#change").prop("disabled",true);
+    $("#reset").prop("disabled",true);
+
+    // data validation and get form data
+    function validateAndGetFormData() {
+    var shipmentNo = $("#shipmentno").val();
+    if (shipmentNo === "") {
+    alert("Shipment No is Required");
+    $("#shipmentno").focus();
+    return "";
+    }
+    var des = $("#description").val();
+    if (des === "") {
+    alert("Description is Required");
+    $("#description").focus();
+    return "";
+    }
+    var source = $("#source").val();
+    if (source === "") {
+    alert("Source is Required");
+    $("#source").focus();
+    return "";
+    }
+    var destination = $("#destination").val();
+    if (destination === "") {
+    alert("Destination is Required ");
+    $("#destination").focus();
+    return "";
+    }
+    var shipdate = $("#shippingdate").val();
+    if (shipdate === "") {
+    alert("Shipping Date is Required");
+    $("#shippingdate").focus();
+    return "";
+    }
+    var exdd = $("#exdd").val();
+    if (exdd === "") {
+    alert("Expected Delivery Date is Required");
+    $("#exdd").focus();
+    return "";
+    }
+    var jsonStrObj = {
+    ShipmentNo: shipmentNo,
+    Description: des,
+    Source: source,
+    Destination:destination,
+    ShippingDate:shipdate,
+    Expecteddelivery:exdd
+    };
+    return JSON.stringify(jsonStrObj);
+    }
+    // Reset form data
+       
+    function resetForm() {
+    $("#shipmentno").val("")
+    $("#description").val("");
+    $("#source").val("");
+    $("#destination").val("");
+    $("#shippingdate").val("");
+    $("#exdd").val("");
+    $("#shipmentno").prop("disabled",false);
+    $("#save").prop("disabled",true);
+    $("#change").prop("disabled",true);
+    $("#reset").prop("disabled",true);
+
+    $("#shipmentno").focus();
+    }
+    // Save data in the database
+    function saveData() {
+    var jsonStr = validateAndGetFormData();
+    if (jsonStr === "") {
+    return;
+    }
+    var putReqStr = createPUTRequest(connToken,
+    jsonStr, empDBName, empRelationName);
+    alert(putReqStr);
+    jQuery.ajaxSetup({async: false});
+    var resultObj = executeCommandAtGivenBaseUrl(putReqStr,
+    jpdbBaseURL,jpdbIML);
+    alert(JSON.stringify(resultObj));
+    jQuery.ajaxSetup({async: true});
+    resetForm();
+    $("#shipmentno").focus();
+    }
+    // Change data in the database
+    function changeData() {
+    $("#change").prop("disabled",true);  
+    var jsonchange = validateAndGetFormData();
+    if (jsonchange === "") {
+    return;
+    }
+    var updateRequest = createUPDATERecordRequest(connToken,
+    jsonchange, empDBName, empRelationName, localStorage.getItem('recno'));
+    alert(updateRequest);
+    jQuery.ajaxSetup({async: false});
+    var resultObj = executeCommandAtGivenBaseUrl(updateRequest,
+    jpdbBaseURL,"/api/iml");
+    alert(JSON.stringify(resultObj));
+    jQuery.ajaxSetup({async: true});
+    resetForm();
+    $("#shipmentno").focus();
+    }
+    // get data by shipment No
+    function getShip(){
+        var shipmentNoJsonObj=shipmentNoAsJsonObj();
+        var getRequest=createGET_BY_KEYRequest(connToken,
+     empDBName, empRelationName, shipmentNoJsonObj);
+    
+    jQuery.ajaxSetup({async: false});
+    var resJsonObj = executeCommandAtGivenBaseUrl(getRequest,
+    jpdbBaseURL,jpdbIRL);
+    
+    jQuery.ajaxSetup({async: true});
+    if(resJsonObj.status===400){
+        
+
+    $("#reset").prop("disabled",false);
+    $("#description").focus();   
+    $("#description").prop("disabled",false);
+    $("#source").prop("disabled",false);
+    $("#destination").prop("disabled",false);
+    $("#shippingdate").prop("disabled",false);
+    $("#exdd").prop("disabled",false);
+    $("#save").prop("disabled",false);
+    }
+    if(resJsonObj.status===200)
+    {
+        $("#shipmentno").prop("disabled",true);
+        fillData(resJsonObj)
+    $("#change").prop("disabled",false);
+    $("#reset").prop("disabled",false);
+    $("#save").prop("disabled",true);
+
+    $("#description").focus();  
+    $("#description").prop("disabled",false);
+    $("#source").prop("disabled",false);
+    $("#destination").prop("disabled",false);
+    $("#shippingdate").prop("disabled",false);
+    $("#exdd").prop("disabled",false); 
+    }
+    
+    }
+    function shipmentNoAsJsonObj(){
+        var shipmentno=$('#shipmentno').val();
+        var jsonStr={
+            ShipmentNo:shipmentno
+        }
+        return JSON.stringify(jsonStr);
+    }
+    // filldata by empid in form
+    function fillData(jsonObj){
+        
+        saveRecordNo2LS(jsonObj);
+        
+        var record=JSON.parse(jsonObj.data).record;
+        $("#description").val(record.Description);
+        $("#source").val(record.Source);
+        $("#destination").val(record.Destination);
+        $("#shippingdate").val(record.ShippingDate);
+        $("#exdd").val(record.Expecteddelivery);
+    }
+    // Save record number in local storage
+    function saveRecordNo2LS(jsonObj){
+        var lvData=JSON.parse(jsonObj.data);
+        localStorage.setItem('recno',lvData.rec_no);
+    }
+    
+    </script>
+</div>
