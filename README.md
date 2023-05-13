@@ -1,6 +1,6 @@
-# Shipment-management-form
-####Shipment management form connecting with jsonpowerDB
-##Benefits of using JsonPowerDB
--It is serverless database.
-*It is a light-weight database.
-+Easy and fast to develop.
+# Shipment-management-form connected with jsonPowerDB
+It is a shipment details form well connected with jsonPowerDB
+#Benefits of jsonPowerDB
+Easy to use and easy to develop.
+It is light-weight.
+
