@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <title>Bootstrap Example</title>
@@ -18,6 +17,7 @@ src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></scri
 src="https://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
 </head>
 <body>
+<!--   shipment form html code   -->
 <div class="container">
 <div class="page-header text-center">
 <h2>Shipment Management Form</h2>
@@ -62,7 +62,6 @@ onclick="changeData();">
 <input type="button" class="btn btn-primary btn-lg" id="reset" value="Reset"  
 onclick="resetForm();">    
 </div>
-
 </form>
 <!-- javascript code -->
 <script>
@@ -82,7 +81,6 @@ onclick="resetForm();">
     $("#save").prop("disabled",true);
     $("#change").prop("disabled",true);
     $("#reset").prop("disabled",true);
-
     // data validation and get form data
     function validateAndGetFormData() {
     var shipmentNo = $("#shipmentno").val();
@@ -132,7 +130,6 @@ onclick="resetForm();">
     return JSON.stringify(jsonStrObj);
     }
     // Reset form data
-       
     function resetForm() {
     $("#shipmentno").val("")
     $("#description").val("");
@@ -144,7 +141,6 @@ onclick="resetForm();">
     $("#save").prop("disabled",true);
     $("#change").prop("disabled",true);
     $("#reset").prop("disabled",true);
-
     $("#shipmentno").focus();
     }
     // Save data in the database
@@ -212,7 +208,6 @@ onclick="resetForm();">
     $("#change").prop("disabled",false);
     $("#reset").prop("disabled",false);
     $("#save").prop("disabled",true);
-
     $("#description").focus();  
     $("#description").prop("disabled",false);
     $("#source").prop("disabled",false);
@@ -220,7 +215,6 @@ onclick="resetForm();">
     $("#shippingdate").prop("disabled",false);
     $("#exdd").prop("disabled",false); 
     }
-    
     }
     function shipmentNoAsJsonObj(){
         var shipmentno=$('#shipmentno').val();
@@ -231,9 +225,7 @@ onclick="resetForm();">
     }
     // filldata by empid in form
     function fillData(jsonObj){
-        
         saveRecordNo2LS(jsonObj);
-        
         var record=JSON.parse(jsonObj.data).record;
         $("#description").val(record.Description);
         $("#source").val(record.Source);
@@ -246,6 +238,5 @@ onclick="resetForm();">
         var lvData=JSON.parse(jsonObj.data);
         localStorage.setItem('recno',lvData.rec_no);
     }
-    
     </script>
 </div>
